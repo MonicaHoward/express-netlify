@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const serverless = require('serverless-http');
 const ejs = require('ejs');
 const MongoClient = require('mongodb').MongoClient;
 
@@ -7,6 +8,7 @@ const app = express();
 
 const DB_URI = 'mongodb+srv://monicah2:bobdylan33@db1.zjskuo0.mongodb.net/?retryWrites=true&w=majority';
 const DB_NAME = 'marcbBlogDB';
+
 
 MongoClient.connect(DB_URI, {useUnifiedTopology: true})
     .then(client => {
@@ -65,3 +67,9 @@ MongoClient.connect(DB_URI, {useUnifiedTopology: true})
         })
 
     })
+
+    app.use(bodyParser.json());
+    app.use('/.netlify/functions/server', router);  // path must route to lambda
+    
+    module.exports = app;
+    module.exports.handler = serverless(app);
